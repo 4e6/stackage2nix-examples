@@ -1,11 +1,6 @@
-sudo: false
+sudo: required
 
 language: generic
-
-addons:
-  apt:
-    packages:
-    - libgmp-dev
 
 cache:
   directories:
@@ -21,8 +16,12 @@ jobs:
       script: stack2nix-test path --dry-run
 
 before_install:
-- mount --bind /nix ~/.nix
+- mkdir -p ~/.nix
+- sudo mkdir -p /nix
+- sudo chmod a+w /nix
+- sudo mount --bind ~/.nix /nix
 - curl https://nixos.org/nix/install | sh
+- source ~/.nix-profile/etc/profile.d/nix.sh
 # cabal2nix dependencies
 - nix-env -i nix-prefetch-git
 - nix-shell -p cabal-install --run 'cabal update'
