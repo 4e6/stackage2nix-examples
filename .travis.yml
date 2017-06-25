@@ -1,0 +1,34 @@
+sudo: false
+
+language: nix
+
+addons:
+  apt:
+    packages:
+    - libgmp-dev
+
+# Caching so the next build will be fast too.
+cache:
+  directories:
+  - $HOME/.stack
+  - $HOME/.cabal
+
+env:
+  - STACK_YAML=stack2nix/stack.yaml
+jobs:
+  include:
+    - stage: build
+      script: stack -j2 --no-terminal --install-ghc install stack2nix
+    - stage: test
+      script: stack exec -- stack2nix-test path --dry-run
+
+before_install:
+# cabal2nix dependencies
+- nix-env -i nix-prefetch-git
+- stack -j2 --no-terminal --install-ghc install cabal-install
+- stack exec -- cabal update
+# Download and unpack the stack executable
+- mkdir -p ~/.local/bin
+- export PATH=$HOME/.local/bin:$PATH
+- travis_retry curl -L https://www.stackage.org/stack/linux-x86_64 | tar xz --wildcards --strip-components=1 -C ~/.local/bin '*/stack'
+
