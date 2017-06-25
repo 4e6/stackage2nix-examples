@@ -13,5 +13,6 @@ git clone --recursive https://github.com/4e6/stack2nix-examples.git
 Build specified project:
 
 ```
-./stack2nix-test wai
+./stack2nix-test stack --dry-run
+./stack2nix-test stack
 ```

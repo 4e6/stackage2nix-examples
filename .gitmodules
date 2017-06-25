@@ -1,13 +1,20 @@
 [submodule "lts-haskell"]
 	path = lts-haskell
 	url = https://github.com/fpco/lts-haskell.git
+	branch = master
 [submodule "all-cabal-hashes"]
 	path = all-cabal-hashes
 	url = https://github.com/commercialhaskell/all-cabal-hashes.git
-	branch = current-hackage
+	branch = hackage
 [submodule "inflections-hs"]
 	path = inflections-hs
 	url = https://github.com/stackbuilders/inflections-hs.git
+	branch = master
 [submodule "wai"]
 	path = wai
 	url = https://github.com/yesodweb/wai.git
+	branch = master
+[submodule "stack"]
+	path = stack
+	url = https://github.com/commercialhaskell/stack.git
+	branch = master

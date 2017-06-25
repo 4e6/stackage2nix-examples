@@ -1,25 +1,41 @@
 #!/usr/bin/env bash
+#
 
 set -e
 
-nix-build-cabal () {
+usage () {
+  cat << EOF
+Usage:
+  stack2nix-test inflectins-hs
+  stack2nix-test stack --dry-run
+EOF
+}
+
+declare DIR
+if [ -z "$1" ]; then
+  usage
+  exit 1
+else
+  DIR=$1
+  shift
+fi
+
+nix-build-project () {
   local -a projects
-  local -r dir=$1
   while IFS= read -d $'\0' -r file ; do
     projects+=( $(basename "$file" .cabal) )
-  done < <(find "$dir" -not -path '*/\.*' -type f -name '*.cabal' -print0)
-  (set -x; nix-build ${projects[@]/#/ -A })
+  done < <(find "$DIR" -maxdepth 2 -not -path '*/\.*' -type f -name '*.cabal' -print0)
+  ( set -x; nix-build ${projects[@]/#/ -A } $@ )
 }
 
-test-project () {
-  local -r dir=$1
-  set -x
-  stack2nix \
-    --lts-haskell ./lts-haskell \
-    --all-cabal-hashes ./all-cabal-hashes \
-    "$dir/"
-  set +x
-  nix-build-cabal "$dir"
+stack2nix-project () {
+  ( set -x;
+    stack2nix \
+      --lts-haskell ./lts-haskell \
+      --all-cabal-hashes ./all-cabal-hashes \
+      "$DIR/"
+    )
 }
 
-test-project "$1"
+stack2nix-project "$@"
+nix-build-project "$@"
