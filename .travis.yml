@@ -10,8 +10,8 @@ cache:
 
 jobs:
   include:
-    - stage: cache1
-      script: nix-build -A aeson stack2nix/release.nix
+    - stage: stage0
+      script: nix-build -A lens stack2nix/release.nix
     - stage: stack2nix
       script: nix-env -f stack2nix/release.nix -i stack2nix
     - stage: test
