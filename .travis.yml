@@ -4,16 +4,15 @@ language: generic
 
 cache:
   directories:
-  - $HOME/.stack
   - $HOME/.cabal
   - $HOME/.nix
 
 jobs:
   include:
-    - stage: stage0
-      script: nix-build -A lens -A store -A amazonka release.nix
-    - stage: stage1
-      script: nix-build -A stackage-curator release.nix
+    - stage: warmup0
+      script: timeout 2400 nix-build -A stack2nix release.nix || test $? -eq 124 || false
+    - stage: warmup1
+      script: timeout 2400 nix-build -A stack2nix release.nix || test $? -eq 124 || false
     - stage: bootstrap
       script: nix-env -f release.nix -i stack2nix
     - stage: test
